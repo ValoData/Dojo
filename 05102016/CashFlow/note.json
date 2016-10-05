@@ -1,0 +1,496 @@
+{
+  "paragraphs": [
+    {
+      "text": "val nInst \u003d z.input(\"1:Number of Instruments\", \"10\").toString.toInt\nval avgDuration \u003d z.input(\"2:Average Duration\", \"15\").toString.toInt\nval avgAmt \u003d z.input(\"3:Average Amount\", \"20000\").toString.toInt\nval avgIr \u003d z.input(\"4:Average Interest Rate\", \".05\").toString.toDouble\nval stLine \u003d z.input(\"5:Straight Line Percentage \", \".5\").toString.toDouble\nval constRpmt \u003d z.input(\"6:Constant Repayment Percentage\", \".4\").toString.toDouble\nval bullet \u003d z.input(\"7:Bullet Percentage\", \".1\").toString.toDouble",
+      "dateUpdated": "Sep 25, 2016 11:43:30 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {
+          "3:Average Amount": "20000",
+          "1:Number of Instruments": "10",
+          "2:Average Duration": "2",
+          "4:Average Interest Rate": ".05",
+          "5:Straight Line percentage ": "1",
+          "5:Straight Line Percentage ": ".3",
+          "6:Constant Repayment Percentage": ".2",
+          "7:Bullet Percentage": ".5"
+        },
+        "forms": {
+          "1:Number of Instruments": {
+            "name": "1:Number of Instruments",
+            "displayName": "1:Number of Instruments",
+            "type": "input",
+            "defaultValue": "10",
+            "hidden": false
+          },
+          "2:Average Duration": {
+            "name": "2:Average Duration",
+            "displayName": "2:Average Duration",
+            "type": "input",
+            "defaultValue": "15",
+            "hidden": false
+          },
+          "3:Average Amount": {
+            "name": "3:Average Amount",
+            "displayName": "3:Average Amount",
+            "type": "input",
+            "defaultValue": "20000",
+            "hidden": false
+          },
+          "4:Average Interest Rate": {
+            "name": "4:Average Interest Rate",
+            "displayName": "4:Average Interest Rate",
+            "type": "input",
+            "defaultValue": ".05",
+            "hidden": false
+          },
+          "5:Straight Line Percentage ": {
+            "name": "5:Straight Line Percentage ",
+            "displayName": "5:Straight Line Percentage ",
+            "type": "input",
+            "defaultValue": ".5",
+            "hidden": false
+          },
+          "6:Constant Repayment Percentage": {
+            "name": "6:Constant Repayment Percentage",
+            "displayName": "6:Constant Repayment Percentage",
+            "type": "input",
+            "defaultValue": ".4",
+            "hidden": false
+          },
+          "7:Bullet Percentage": {
+            "name": "7:Bullet Percentage",
+            "displayName": "7:Bullet Percentage",
+            "type": "input",
+            "defaultValue": ".1",
+            "hidden": false
+          }
+        }
+      },
+      "jobName": "paragraph_1474015703996_-2018721148",
+      "id": "20160915-225426_2061162703",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nnInst: Int \u003d 10\n\navgDuration: Int \u003d 2\n\navgAmt: Int \u003d 20000\n\navgIr: Double \u003d 0.05\n\nstLine: Double \u003d 0.3\n\nconstRpmt: Double \u003d 0.2\n\nbullet: Double \u003d 0.5\n"
+      },
+      "dateCreated": "Sep 16, 2016 9:48:23 AM",
+      "dateStarted": "Sep 25, 2016 11:43:31 AM",
+      "dateFinished": "Sep 25, 2016 11:43:49 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Create sample",
+      "text": "//defne the differents amortisation type \nval names \u003d Array(\"Straight_Line\", \"Constant_Repayment\", \"Bullet\")\n\n//udf assignes amortisation type based on defined probability\nval probaMix \u003d udf((p: Double) \u003d\u003e{\n    if(p \u003c stLine) names(0)\n    else if (p \u003e 1-constRpmt) names(1)\n    else names(2)})\n\nimport org.apache.spark.sql.functions._\n\n//random value generator\nval r \u003d scala.util.Random\n\n//create dataset\ncase class Instrument(id: Long,  principal: Double, mortgage_type: String,  ir: Double, duration: Double)\nval dataset \u003d sqlContext.range(0, nInst).select(($\"id\"),\n                round(abs(randn*avgAmt)).alias(\"principal\"),\n                probaMix(abs(rand)).alias(\"mortgage_type\"),\n                round(abs(rand*avgIr)+.01,2).alias(\"ir\"),\n                round(abs(randn*avgDuration)+1).alias(\"duration\")).as[Instrument]\ndataset.show(2)\ndataset.count",
+      "dateUpdated": "Sep 25, 2016 11:50:08 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1474015703999_-2018336399",
+      "id": "20160915-212523_68406745",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nnames: Array[String] \u003d Array(Straight_Line, Constant_Repayment, Bullet)\n\nprobaMix: org.apache.spark.sql.expressions.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,StringType,Some(List(DoubleType)))\n\nimport org.apache.spark.sql.functions._\n\nr: util.Random.type \u003d scala.util.Random$@64327db0\n\ndefined class Instrument\n\ndataset: org.apache.spark.sql.Dataset[Instrument] \u003d [id: bigint, principal: double ... 3 more fields]\n+---+---------+-------------+----+--------+\n| id|principal|mortgage_type|  ir|duration|\n+---+---------+-------------+----+--------+\n|  0|  11031.0|       Bullet|0.04|     1.0|\n|  1|   7811.0|Straight_Line|0.01|     3.0|\n+---+---------+-------------+----+--------+\nonly showing top 2 rows\n\n\nres11: Long \u003d 10\n"
+      },
+      "dateCreated": "Sep 16, 2016 9:48:23 AM",
+      "dateStarted": "Sep 25, 2016 11:48:13 AM",
+      "dateFinished": "Sep 25, 2016 11:48:17 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Straight Line",
+      "text": "case class Sample (id: Long,  principal: Double, ir: Double, duration: Double)\nval sample \u003d (dataset.filter(\u0027mortgage_type \u003d\u003d\u003d \"Straight_Line\" ).drop(\u0027mortgage_type)).as[Sample]\n\nsample.show()\n\ncase class Repayment(id: Long, instId:Long, principal: Double, ir:Double, value: Double)\n\nval reps \u003d sample\n  .map(i \u003d\u003e (i.id, i.principal, i.ir, Seq.fill(i.duration.toInt)(i.principal/i.duration.toInt).zipWithIndex))\n  .flatMap(p \u003d\u003e p._4.map { case (x, idx) \u003d\u003e ( p._1,idx,p._2,p._3, x) } )\n  .map(p \u003d\u003e Repayment(p._1, p._2, p._3, p._4,Math.round(p._5*100)/100))  \nreps.show(5)\n\nimport org.apache.spark.sql.expressions.Window\nval byId \u003d Window.partitionBy(\u0027id).orderBy(\u0027id,\u0027instId)\n\nimport org.apache.spark.sql.functions._\nval valueSum \u003d sum(\u0027value).over(byId).as(\"sum_over_id\")\n\nval res \u003d reps.select(\u0027*, valueSum).orderBy(\u0027id,\u0027instId)\nres.show()\n\nreps.count\n\nval res1 \u003d res.select(\u0027*, (\u0027principal - \u0027sum_over_id+\u0027value).as(\"princ_closing_bal\"))\nval res2 \u003d res1.select(\u0027*,round((\u0027princ_closing_bal * \u0027ir),2).as(\"ir_payment\"))\nval res3 \u003d res2.select(\u0027*,(\u0027value + \u0027ir_payment).as(\"total\"))\nres3.show",
+      "dateUpdated": "Sep 27, 2016 9:35:48 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1474800641296_-1503276066",
+      "id": "20160925-115041_1460832544",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\ndefined class Sample\n\nsample: org.apache.spark.sql.Dataset[Sample] \u003d [id: bigint, principal: double ... 2 more fields]\n+---+---------+----+--------+\n| id|principal|  ir|duration|\n+---+---------+----+--------+\n|  1|   7811.0|0.01|     3.0|\n|  3|  22418.0|0.01|     2.0|\n|  7|   9696.0|0.03|     2.0|\n+---+---------+----+--------+\n\n"
+      },
+      "dateCreated": "Sep 25, 2016 11:50:41 AM",
+      "dateStarted": "Sep 27, 2016 9:32:12 AM",
+      "dateFinished": "Sep 27, 2016 9:32:25 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Constant Repayment",
+      "text": "case class Sample (id: Long,  principal: Double, ir: Double, duration: Double)\nval sample \u003d (dataset.filter(\u0027mortgage_type \u003d\u003d\u003d \"Constant_Repayment\" ).drop(\u0027mortgage_type)).as[Sample]\n\ncase class Repayment(id: Long, instId:Long, principal: Double, ir:Double, value: Double, total:Double)\n\nval reps \u003d sample\n  .map(i \u003d\u003e (i.id, i.principal, i.ir, Seq.fill(i.duration.toInt)(i.principal/i.duration.toInt).zipWithIndex, (i.ir*i.principal)/(1-scala.math.pow(1+i.ir, -(i.duration)))))\n  .flatMap(p \u003d\u003e p._4.map { case (x, idx) \u003d\u003e ( p._1,idx,p._2,p._3, x,p._5) } )\n  .map(p \u003d\u003e Repayment(p._1, p._2, p._3, p._4,Math.round(p._5*100)/100,Math.round(p._6*100)/100))\n  \nimport org.apache.spark.sql.expressions.Window\nval byId \u003d Window.partitionBy(\u0027id).orderBy(\u0027id,\u0027instId)\n\nimport org.apache.spark.sql.functions._\nval valueSum \u003d sum(\u0027value*\u0027ir).over(byId).as(\"sum_over_id\")\n\n//princ_closing_bal\n\nval res \u003d reps.select(\u0027*, valueSum).orderBy(\u0027id,\u0027instId)\nval res1 \u003d res.select(\u0027*, round((\u0027principal*pow((\u0027ir+1),\u0027instId +1)-(\u0027total/\u0027ir)*(pow((\u0027ir+1),\u0027instId +1)-1)),2).as(\"princ_closing_bal\"))\nval res2 \u003d res1.select(\u0027*, \n                        round(((\u0027total/\u0027ir)*(pow((\u0027ir+1),\u0027instId +1)-1)),2).as(\"principal_repayment\"),\n                        round(\u0027principal*pow((\u0027ir+1),\u0027instId +1)-\u0027principal).as(\"interest_rates\"))\nval res3 \u003d res2.select(\u0027*, (\u0027principal_repayment + \u0027interest_rates).as(\"total\"))\nres3.show\n\n",
+      "dateUpdated": "Sep 23, 2016 5:04:09 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1474466387627_34640740",
+      "id": "20160921-145947_1236805561",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\ndefined class Sample\n\nsample: org.apache.spark.sql.Dataset[Sample] \u003d [id: bigint, principal: double ... 2 more fields]\n\ndefined class Repayment\n\nreps: org.apache.spark.sql.Dataset[Repayment] \u003d [id: bigint, instId: bigint ... 4 more fields]\n\nimport org.apache.spark.sql.expressions.Window\n\nbyId: org.apache.spark.sql.expressions.WindowSpec \u003d org.apache.spark.sql.expressions.WindowSpec@569fb668\n\nimport org.apache.spark.sql.functions._\n\nvalueSum: org.apache.spark.sql.Column \u003d sum((value * ir)) OVER (PARTITION BY id ORDER BY id ASC, instId ASC UnspecifiedFrame) AS `sum_over_id`\n\nres: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] \u003d [id: bigint, instId: bigint ... 5 more fields]\n\nres1: org.apache.spark.sql.DataFrame \u003d [id: bigint, instId: bigint ... 6 more fields]\n\nres2: org.apache.spark.sql.DataFrame \u003d [id: bigint, instId: bigint ... 8 more fields]\n\nres3: org.apache.spark.sql.DataFrame \u003d [id: bigint, instId: bigint ... 9 more fields]\n+---+------+---------+----+-------+-------+-----------+-----------------+-------------------+--------------+--------+\n| id|instId|principal|  ir|  value|  total|sum_over_id|princ_closing_bal|principal_repayment|interest_rates|   total|\n+---+------+---------+----+-------+-------+-----------+-----------------+-------------------+--------------+--------+\n|  1|     0|  31237.0|0.06|10412.0|11686.0|     624.72|         21425.22|            11686.0|        1874.0| 13560.0|\n|  1|     1|  31237.0|0.06|10412.0|11686.0|    1249.44|         11024.73|           24073.16|        3861.0|27934.16|\n|  1|     2|  31237.0|0.06|10412.0|11686.0|    1874.16|             0.22|           37203.55|        5967.0|43170.55|\n|  7|     0|   3311.0|0.01| 1655.0| 1680.0|      16.55|          1664.11|             1680.0|          33.0|  1713.0|\n|  7|     1|   3311.0|0.01| 1655.0| 1680.0|       33.1|             0.75|             3376.8|          67.0|  3443.8|\n+---+------+---------+----+-------+-------+-----------+-----------------+-------------------+--------------+--------+\n\n"
+      },
+      "dateCreated": "Sep 21, 2016 2:59:47 AM",
+      "dateStarted": "Sep 23, 2016 5:04:09 AM",
+      "dateFinished": "Sep 23, 2016 5:04:15 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Bullet",
+      "text": "\ncase class Sample (id: Long,  principal: Double, ir: Double, duration: Double)\nval sample \u003d (dataset.filter(\u0027mortgage_type \u003d\u003d\u003d \"Bullet\" ).drop(\u0027mortgage_type)).as[Sample]",
+      "dateUpdated": "Sep 23, 2016 5:08:37 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1474463617206_-622985725",
+      "id": "20160921-141337_476329755",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\ndefined class Sample\n\nsample: org.apache.spark.sql.Dataset[Sample] \u003d [id: bigint, principal: double ... 2 more fields]\n"
+      },
+      "dateCreated": "Sep 21, 2016 2:13:37 AM",
+      "dateStarted": "Sep 23, 2016 5:08:37 AM",
+      "dateFinished": "Sep 23, 2016 5:08:38 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val reps \u003d sample\n  .map(i \u003d\u003e (i.id, i.principal, i.ir, Seq.fill(i.duration.toInt)(i.principal/i.duration.toInt).zipWithIndex, (i.ir*i.principal)/(1-scala.math.pow(1+i.ir, -(i.duration)))))\n  .flatMap(p \u003d\u003e p._4.map { case (x, idx) \u003d\u003e ( p._1,idx,p._2,p._3, x,p._5) } )\n  .map(p \u003d\u003e Repayment(p._1, p._2, p._3, p._4,Math.round(p._5*100)/100,Math.round(p._6*100)/100))",
+      "dateUpdated": "Sep 23, 2016 5:13:04 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1474646941624_1777427327",
+      "id": "20160923-170901_1053291969",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nreps: org.apache.spark.sql.Dataset[Repayment] \u003d [id: bigint, instId: bigint ... 4 more fields]\n"
+      },
+      "dateCreated": "Sep 23, 2016 5:09:01 AM",
+      "dateStarted": "Sep 23, 2016 5:13:04 AM",
+      "dateFinished": "Sep 23, 2016 5:13:05 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import org.apache.spark.sql.functions\nimport org.apache.spark.sql.expressions.Window\n\n\nval byId \u003d Window.partitionBy(\u0027id).orderBy(\u0027id,\u0027instId)\n\nimport org.apache.spark.sql.functions._\nval valueSum \u003d lead((\u0027instId),1,0).over(byId).as(\"max1\")\n\nval res \u003d reps.select(\u0027*, valueSum).orderBy(\u0027id,\u0027instId)\nval res1 \u003d res.select(\u0027*, round(\u0027principal*\u0027ir,2).as(\"Interest_repayment\"))\nres1.registerTempTable(\"res1\")",
+      "dateUpdated": "Sep 24, 2016 5:27:08 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1474684115904_-1301412300",
+      "id": "20160924-032835_2002813365",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nimport org.apache.spark.sql.functions\n\nimport org.apache.spark.sql.expressions.Window\n\nbyId: org.apache.spark.sql.expressions.WindowSpec \u003d org.apache.spark.sql.expressions.WindowSpec@55dcd4af\n\nimport org.apache.spark.sql.functions._\n\nvalueSum: org.apache.spark.sql.Column \u003d lead(instId, 1, 0) OVER (PARTITION BY id ORDER BY id ASC, instId ASC UnspecifiedFrame) AS `max1`\n\nres: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] \u003d [id: bigint, instId: bigint ... 5 more fields]\n\nres1: org.apache.spark.sql.DataFrame \u003d [id: bigint, instId: bigint ... 6 more fields]\n\nwarning: there was one deprecation warning; re-run with -deprecation for details\n"
+      },
+      "dateCreated": "Sep 24, 2016 3:28:35 AM",
+      "dateStarted": "Sep 24, 2016 5:27:08 AM",
+      "dateFinished": "Sep 24, 2016 5:27:16 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val res2 \u003d spark.sql(\"select *, case when max1 \u003d 0 then round(principal*pow((1+ir),instId+1)-principal,2) else 0 end as princ_repaymt from res1 \")\n\n\n//res.withColumn(\"compInt\", compInt)\n\n//sql(\"select case when true then 1.0 else \u00271\u0027 end from src \")\n",
+      "dateUpdated": "Sep 24, 2016 5:29:57 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1474684736375_906013089",
+      "id": "20160924-033856_1917509657",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nres2: org.apache.spark.sql.DataFrame \u003d [id: bigint, instId: bigint ... 7 more fields]\n\nres3: org.apache.spark.sql.DataFrame \u003d [id: bigint, instId: bigint ... 7 more fields]\n"
+      },
+      "dateCreated": "Sep 24, 2016 3:38:56 AM",
+      "dateStarted": "Sep 24, 2016 5:28:50 AM",
+      "dateFinished": "Sep 24, 2016 5:28:53 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "res2.show(5)",
+      "dateUpdated": "Sep 24, 2016 5:38:17 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1474691882201_269791053",
+      "id": "20160924-053802_393042197",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "+---+------+---------+----+------+------+----+------------------+-------------+\n| id|instId|principal|  ir| value| total|max1|Interest_repayment|princ_repaymt|\n+---+------+---------+----+------+------+----+------------------+-------------+\n|  3|     0|  17612.0|0.05|5870.0|6467.0|   1|             880.6|          0.0|\n|  3|     1|  17612.0|0.05|5870.0|6467.0|   2|             880.6|          0.0|\n|  3|     2|  17612.0|0.05|5870.0|6467.0|   0|             880.6|      2776.09|\n|  4|     0|  17350.0|0.04|5783.0|6252.0|   1|             694.0|          0.0|\n|  4|     1|  17350.0|0.04|5783.0|6252.0|   2|             694.0|          0.0|\n+---+------+---------+----+------+------+----+------------------+-------------+\nonly showing top 5 rows\n\n"
+      },
+      "dateCreated": "Sep 24, 2016 5:38:02 AM",
+      "dateStarted": "Sep 24, 2016 5:38:17 AM",
+      "dateFinished": "Sep 24, 2016 5:38:19 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import org.apache.spark.sql.expressions.Window\nval byId \u003d Window.partitionBy(\u0027id).orderBy(\u0027id,\u0027instId)\n\nimport org.apache.spark.sql.functions._\nval total \u003d sum(\u0027Interest_repayment +\u0027princ_repaymt).over(byId).as(\"Total\")\n\nval res3 \u003d res2.select(\u0027*, total )",
+      "dateUpdated": "Sep 24, 2016 5:39:06 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1474691381672_-241075577",
+      "id": "20160924-052941_1895601002",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nimport org.apache.spark.sql.expressions.Window\n\nbyId: org.apache.spark.sql.expressions.WindowSpec \u003d org.apache.spark.sql.expressions.WindowSpec@30caae81\n\nimport org.apache.spark.sql.functions._\n\ntotal: org.apache.spark.sql.Column \u003d sum((Interest_repayment + princ_repaymt)) OVER (PARTITION BY id ORDER BY id ASC, instId ASC UnspecifiedFrame) AS `Total`\n\nres3: org.apache.spark.sql.DataFrame \u003d [id: bigint, instId: bigint ... 8 more fields]\n"
+      },
+      "dateCreated": "Sep 24, 2016 5:29:41 AM",
+      "dateStarted": "Sep 24, 2016 5:39:06 AM",
+      "dateFinished": "Sep 24, 2016 5:39:15 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "res3.show()",
+      "dateUpdated": "Sep 24, 2016 5:39:19 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1474646917696_1653138108",
+      "id": "20160923-170837_1988273901",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "+---+------+---------+----+------+------+----+------------------+-------------+-----------------+\n| id|instId|principal|  ir| value| total|max1|Interest_repayment|princ_repaymt|            Total|\n+---+------+---------+----+------+------+----+------------------+-------------+-----------------+\n|  6|     0|  22298.0|0.04|7432.0|8035.0|   1|            891.92|          0.0|           891.92|\n|  6|     1|  22298.0|0.04|7432.0|8035.0|   2|            891.92|          0.0|          1783.84|\n|  6|     2|  22298.0|0.04|7432.0|8035.0|   0|            891.92|      2784.22|          5459.98|\n|  5|     0|   4432.0|0.02| 738.0| 791.0|   1|             88.64|          0.0|            88.64|\n|  5|     1|   4432.0|0.02| 738.0| 791.0|   2|             88.64|          0.0|           177.28|\n|  5|     2|   4432.0|0.02| 738.0| 791.0|   3|             88.64|          0.0|           265.92|\n|  5|     3|   4432.0|0.02| 738.0| 791.0|   4|             88.64|          0.0|           354.56|\n|  5|     4|   4432.0|0.02| 738.0| 791.0|   5|             88.64|          0.0|            443.2|\n|  5|     5|   4432.0|0.02| 738.0| 791.0|   0|             88.64|       559.15|          1090.99|\n|  3|     0|  17612.0|0.05|5870.0|6467.0|   1|             880.6|          0.0|            880.6|\n|  3|     1|  17612.0|0.05|5870.0|6467.0|   2|             880.6|          0.0|           1761.2|\n|  3|     2|  17612.0|0.05|5870.0|6467.0|   0|             880.6|      2776.09|          5417.89|\n|  8|     0|   3781.0|0.06| 945.0|1091.0|   1|            226.86|          0.0|           226.86|\n|  8|     1|   3781.0|0.06| 945.0|1091.0|   2|            226.86|          0.0|           453.72|\n|  8|     2|   3781.0|0.06| 945.0|1091.0|   3|            226.86|          0.0|           680.58|\n|  8|     3|   3781.0|0.06| 945.0|1091.0|   0|            226.86|       992.43|          1899.87|\n|  4|     0|  17350.0|0.04|5783.0|6252.0|   1|             694.0|          0.0|            694.0|\n|  4|     1|  17350.0|0.04|5783.0|6252.0|   2|             694.0|          0.0|           1388.0|\n|  4|     2|  17350.0|0.04|5783.0|6252.0|   0|             694.0|      2166.39|4248.389999999999|\n+---+------+---------+----+------+------+----+------------------+-------------+-----------------+\n\n"
+      },
+      "dateCreated": "Sep 23, 2016 5:08:37 AM",
+      "dateStarted": "Sep 24, 2016 5:39:19 AM",
+      "dateFinished": "Sep 24, 2016 5:39:34 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "",
+      "dateUpdated": "Sep 24, 2016 5:34:38 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1474691668411_9610496",
+      "id": "20160924-053428_939408523",
+      "dateCreated": "Sep 24, 2016 5:34:28 AM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Cash_flow/Cash_flow1",
+  "id": "2BW9FTX3Q",
+  "angularObjects": {
+    "2BTZSA2E6:shared_process": [],
+    "2BVH8BSJP:shared_process": [],
+    "2BVVZ59XJ:shared_process": [],
+    "2BSHRRYQJ:shared_process": [],
+    "2BTYMP4ZT:shared_process": [],
+    "2BT2C5GST:shared_process": [],
+    "2BTS47RXM:shared_process": [],
+    "2BU7TJAMT:shared_process": [],
+    "2BVCD98GJ:shared_process": [],
+    "2BVUJ21WC:shared_process": [],
+    "2BTDY13FP:shared_process": [],
+    "2BUHVQQT3:shared_process": [],
+    "2BW5Q7TMY:shared_process": [],
+    "2BVDJZEHC:shared_process": [],
+    "2BWCZKXDN:shared_process": [],
+    "2BVMTMTJ1:shared_process": [],
+    "2BVTWS7HU:shared_process": [],
+    "2BT96Q318:shared_process": []
+  },
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}
