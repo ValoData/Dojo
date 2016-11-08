@@ -1,0 +1,426 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n\n###test",
+      "dateUpdated": "Nov 8, 2016 7:03:38 PM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/markdown",
+        "editorHide": false,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1478631786781_-1809169548",
+      "id": "20161108-190306_1641733993",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch3\u003etest\u003c/h3\u003e\n"
+      },
+      "dateCreated": "Nov 8, 2016 7:03:06 PM",
+      "dateStarted": "Nov 8, 2016 7:03:27 PM",
+      "dateFinished": "Nov 8, 2016 7:03:28 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import org.apache.spark.graphx._\nimport org.apache.spark.rdd.RDD\nimport org.apache.spark.sql.types.{StructType, StructField, LongType}\nimport org.apache.spark.sql._",
+      "dateUpdated": "Nov 8, 2016 5:35:21 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1478624951380_-538421370",
+      "id": "20161108-134743_491693545",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nimport org.apache.spark.graphx._\n\nimport org.apache.spark.rdd.RDD\n\nimport org.apache.spark.sql.types.{StructType, StructField, LongType}\n\nimport org.apache.spark.sql._\n"
+      },
+      "dateCreated": "Nov 8, 2016 5:09:11 AM",
+      "dateStarted": "Nov 8, 2016 5:35:21 AM",
+      "dateFinished": "Nov 8, 2016 5:35:36 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "// Create a Vertex DataFrame with unique ID column \"id\"\nval v \u003d sqlContext.createDataFrame(List(\n  (\"a\", \"Alice\", 34),\n  (\"b\", \"Bob\", 36),\n  (\"c\", \"Charlie\", 30)\n)).toDF(\"id\", \"name\", \"age\")\n// Create an Edge DataFrame with \"src\" and \"dst\" columns\nval e \u003d sqlContext.createDataFrame(List(\n  (\"a\", \"b\", \"friend\"),\n  (\"b\", \"c\", \"follow\"),\n  (\"c\", \"b\", \"follow\")\n)).toDF(\"src\", \"dst\", \"relationship\")\n// Create a GraphFrame",
+      "dateUpdated": "Nov 8, 2016 5:35:24 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1478624951383_-538036621",
+      "id": "20161108-142140_67157463",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nv: org.apache.spark.sql.DataFrame \u003d [id: string, name: string ... 1 more field]\n\ne: org.apache.spark.sql.DataFrame \u003d [src: string, dst: string ... 1 more field]\n"
+      },
+      "dateCreated": "Nov 8, 2016 5:09:11 AM",
+      "dateStarted": "Nov 8, 2016 5:35:25 AM",
+      "dateFinished": "Nov 8, 2016 5:35:44 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "def dfZipWithIndex(\n  df: DataFrame,\n  offset: Int \u003d 1,\n  colName: String \u003d \"opID\",\n  inFront: Boolean \u003d true\n) : DataFrame \u003d {\n  df.sqlContext.createDataFrame(\n    df.rdd.zipWithIndex.map(ln \u003d\u003e\n      Row.fromSeq(\n        (if (inFront) Seq(ln._2 + offset) else Seq())\n          ++ ln._1.toSeq ++\n        (if (inFront) Seq() else Seq(ln._2 + offset))\n      )\n    ),\n    StructType(\n      (if (inFront) Array(StructField(colName,LongType,false)) else Array[StructField]()) \n        ++ df.schema.fields ++ \n      (if (inFront) Array[StructField]() else Array(StructField(colName,LongType,false)))\n    )\n  ) \n}\n",
+      "dateUpdated": "Nov 8, 2016 5:35:27 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "tableHide": false,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1478624951384_-539960366",
+      "id": "20161108-144112_1951996394",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\ndfZipWithIndex: (df: org.apache.spark.sql.DataFrame, offset: Int, colName: String, inFront: Boolean)org.apache.spark.sql.DataFrame\n"
+      },
+      "dateCreated": "Nov 8, 2016 5:09:11 AM",
+      "dateStarted": "Nov 8, 2016 5:35:36 AM",
+      "dateFinished": "Nov 8, 2016 5:35:45 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val vG0 \u003d dfZipWithIndex(v)\nval vG : RDD[(VertexId, (String,String))] \u003d vG0.rdd.map{x \u003d\u003e ((x(0).toString.toInt), (x(1).toString,x(2).toString))}\n\nval eG0  \u003d e.join(vG0,\u0027src \u003d\u003d\u003d \u0027id).drop(\"id\").withColumnRenamed(\"opId\",\"srcId\").join(vG0,\u0027dst \u003d\u003d\u003d \u0027id).drop(\"id\").withColumnRenamed(\"opId\",\"dstId\")//.show()//.rdd.map{x \u003d\u003e Edge(x(0).toString, x(1).toString,1)}\nval eG : RDD[Edge[String]]\u003d eG0.rdd.map{x \u003d\u003e Edge(x(3).toString.toInt, x(6).toString.toInt,x(2).toString)}\n\nval defaultUser \u003d (\"John Doe\", \"Missing\")\n\nval graph \u003d Graph(vG, eG, defaultUser)\n",
+      "dateUpdated": "Nov 8, 2016 5:46:10 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1478624951384_-539960366",
+      "id": "20161108-142221_1277024679",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nvG0: org.apache.spark.sql.DataFrame \u003d [opID: bigint, id: string ... 2 more fields]\n\nvG: org.apache.spark.rdd.RDD[(org.apache.spark.graphx.VertexId, (String, String))] \u003d MapPartitionsRDD[290] at map at \u003cconsole\u003e:41\n\neG0: org.apache.spark.sql.DataFrame \u003d [src: string, dst: string ... 7 more fields]\n\neG: org.apache.spark.rdd.RDD[org.apache.spark.graphx.Edge[String]] \u003d MapPartitionsRDD[308] at map at \u003cconsole\u003e:45\n\ndefaultUser: (String, String) \u003d (John Doe,Missing)\n\ngraph: org.apache.spark.graphx.Graph[(String, String),String] \u003d org.apache.spark.graphx.impl.GraphImpl@286bb783\n"
+      },
+      "dateCreated": "Nov 8, 2016 5:09:11 AM",
+      "dateStarted": "Nov 8, 2016 5:46:10 AM",
+      "dateFinished": "Nov 8, 2016 5:46:12 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "eG0.show()",
+      "dateUpdated": "Nov 8, 2016 5:40:00 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true,
+        "editorMode": "ace/mode/scala"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1478626576371_-573183105",
+      "id": "20161108-173616_1835243742",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "+---+---+------------+-----+-------+---+-----+-------+---+\n|src|dst|relationship|srcId|   name|age|dstId|   name|age|\n+---+---+------------+-----+-------+---+-----+-------+---+\n|  b|  c|      follow|    2|    Bob| 36|    3|Charlie| 30|\n|  a|  b|      friend|    1|  Alice| 34|    2|    Bob| 36|\n|  c|  b|      follow|    3|Charlie| 30|    2|    Bob| 36|\n+---+---+------------+-----+-------+---+-----+-------+---+\n\n"
+      },
+      "dateCreated": "Nov 8, 2016 5:36:16 AM",
+      "dateStarted": "Nov 8, 2016 5:40:00 AM",
+      "dateFinished": "Nov 8, 2016 5:40:02 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "\n// Display the vertex and edge DataFrames\ngraph.vertices.toDF.show()\n\n\ngraph.edges.toDF.show()\n\n\n// Compute the max degrees\nval InDegree  \u003d graph.inDegrees.toDF.show()\nval OutDegree \u003d graph.outDegrees.toDF.show()\nval Degrees  \u003d graph.degrees.toDF.show()\n\n",
+      "dateUpdated": "Nov 8, 2016 5:53:28 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1478624951384_-539960366",
+      "id": "20161108-142011_1774351829",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "+---+-----------+\n| _1|         _2|\n+---+-----------+\n|  1|  [a,Alice]|\n|  2|    [b,Bob]|\n|  3|[c,Charlie]|\n+---+-----------+\n\n+-----+-----+------+\n|srcId|dstId|  attr|\n+-----+-----+------+\n|    2|    3|follow|\n|    1|    2|friend|\n|    3|    2|follow|\n+-----+-----+------+\n\n+---+---+\n| _1| _2|\n+---+---+\n|  2|  2|\n|  3|  1|\n+---+---+\n\n\nInDegree: Unit \u003d ()\n+---+---+\n| _1| _2|\n+---+---+\n|  1|  1|\n|  2|  1|\n|  3|  1|\n+---+---+\n\n\nOutDegree: Unit \u003d ()\n+---+---+\n| _1| _2|\n+---+---+\n|  1|  1|\n|  2|  3|\n|  3|  2|\n+---+---+\n\n\nDegrees: Unit \u003d ()\n"
+      },
+      "dateCreated": "Nov 8, 2016 5:09:11 AM",
+      "dateStarted": "Nov 8, 2016 5:53:28 AM",
+      "dateFinished": "Nov 8, 2016 5:53:31 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "// Search for pairs of vertices with edges in both directions between them.\nval motifs: DataFrame \u003d g.find(\"(a)-[e]-\u003e(b); (b)-[e2]-\u003e(a)\")\nmotifs.show()\n\n// More complex queries can be expressed by applying filters.\nmotifs.filter(\"b.age \u003e 30\").show()",
+      "dateUpdated": "Nov 8, 2016 5:52:22 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1478624951384_-539960366",
+      "id": "20161108-151129_357508674",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nmotifs: org.apache.spark.sql.DataFrame \u003d [a: struct\u003cid: string, name: string ... 1 more field\u003e, e: struct\u003csrc: string, dst: string ... 1 more field\u003e ... 2 more fields]\n+--------------+------------+--------------+------------+\n|             a|           e|             b|          e2|\n+--------------+------------+--------------+------------+\n|    [b,Bob,36]|[b,c,follow]|[c,Charlie,30]|[c,b,follow]|\n|[c,Charlie,30]|[c,b,follow]|    [b,Bob,36]|[b,c,follow]|\n+--------------+------------+--------------+------------+\n\n+--------------+------------+----------+------------+\n|             a|           e|         b|          e2|\n+--------------+------------+----------+------------+\n|[c,Charlie,30]|[c,b,follow]|[b,Bob,36]|[b,c,follow]|\n+--------------+------------+----------+------------+\n\n"
+      },
+      "dateCreated": "Nov 8, 2016 5:09:11 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "// Select subgraph of users older than 30, and edges of type \"friend\"\nval v2 \u003d g.vertices.filter(\"age \u003e 30\")\nval e2 \u003d g.edges.filter(\"relationship \u003d \u0027friend\u0027\")\nval g2 \u003d GraphFrame(v2, e2)",
+      "dateUpdated": "Nov 8, 2016 5:09:11 AM",
+      "config": {
+        "colWidth": 6.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1478624951385_-540345115",
+      "id": "20161108-153013_1506232631",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nv2: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] \u003d [id: string, name: string ... 1 more field]\n\ne2: org.apache.spark.sql.Dataset[org.apache.spark.sql.Row] \u003d [src: string, dst: string ... 1 more field]\n\ng2: org.graphframes.GraphFrame \u003d GraphFrame(v:[id: string, name: string ... 1 more field], e:[src: string, dst: string ... 1 more field])\n"
+      },
+      "dateCreated": "Nov 8, 2016 5:09:11 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "\nval result \u003d g.labelPropagation.maxIter(5).run()\nresult.select(\"id\", \"label\").show()",
+      "dateUpdated": "Nov 8, 2016 5:09:11 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1478624951385_-540345115",
+      "id": "20161108-153238_832459123",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nresult: org.apache.spark.sql.DataFrame \u003d [id: string, name: string ... 2 more fields]\n+---+-----+\n| id|label|\n+---+-----+\n|  a|    2|\n|  c|    2|\n|  b|    3|\n+---+-----+\n\n"
+      },
+      "dateCreated": "Nov 8, 2016 5:09:11 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "// Run PageRank until convergence to tolerance \"tol\".\nval results \u003d g.pageRank.resetProbability(0.15).tol(0.01).run()\n// Display resulting pageranks and final edge weights\n// Note that the displayed pagerank may be truncated, e.g., missing the E notation.\n// In Spark 1.5+, you can use show(truncate\u003dfalse) to avoid truncation.\nresults.vertices.select(\"id\", \"pagerank\").show()\nresults.edges.select(\"src\", \"dst\", \"weight\").show()\n\n// Run PageRank for a fixed number of iterations.\nval results2 \u003d g.pageRank.resetProbability(0.15).maxIter(10).run()\n",
+      "dateUpdated": "Nov 8, 2016 5:09:11 AM",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1478624951385_-540345115",
+      "id": "20161108-160955_1781041330",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\nresults: org.graphframes.GraphFrame \u003d GraphFrame(v:[id: string, name: string ... 2 more fields], e:[src: string, dst: string ... 2 more fields])\n+---+------------------+\n| id|          pagerank|\n+---+------------------+\n|  a|              0.15|\n|  c|  1.33561785364765|\n|  b|1.4047282141296686|\n+---+------------------+\n\n+---+---+------+\n|src|dst|weight|\n+---+---+------+\n|  b|  c|   1.0|\n|  c|  b|   1.0|\n|  a|  b|   1.0|\n+---+---+------+\n\n\nresults2: org.graphframes.GraphFrame \u003d GraphFrame(v:[id: string, name: string ... 2 more fields], e:[src: string, dst: string ... 2 more fields])\n"
+      },
+      "dateCreated": "Nov 8, 2016 5:09:11 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "// We will use AggregateMessages utilities later, so name it \"AM\" for short.\nval AM \u003d AggregateMessages\n\n// For each user, sum the ages of the adjacent users.\nval msgToSrc \u003d AM.dst(\"age\")\nval msgToDst \u003d AM.src(\"age\")\nval agg \u003d g.aggregateMessages\n  .sendToSrc(msgToSrc)  // send destination user\u0027s age to source\n  .sendToDst(msgToDst)  // send source user\u0027s age to destination\n  .agg(sum(AM.msg).as(\"summedAges\"))  // sum up ages, stored in AM.msg column\nagg.show()",
+      "dateUpdated": "Nov 8, 2016 5:09:11 AM",
+      "config": {
+        "colWidth": 12.0,
+        "editorMode": "ace/mode/scala",
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1478624951386_-539190868",
+      "id": "20161108-161033_1529858393",
+      "dateCreated": "Nov 8, 2016 5:09:11 AM",
+      "status": "READY",
+      "errorMessage": "",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Tutorials/GraphX",
+  "id": "2C2PVRFMT",
+  "angularObjects": {
+    "2C3WS5VQ7:shared_process": [],
+    "2C24KTPEA:shared_process": [],
+    "2C3ZYE3U7:shared_process": [],
+    "2BZ4T8VBZ:shared_process": [],
+    "2C1PJ9PF2:shared_process": [],
+    "2C2U52K53:shared_process": [],
+    "2C1363KDF:shared_process": [],
+    "2BZSB2NC6:shared_process": [],
+    "2C3D2JN84:shared_process": [],
+    "2C1TJ9FN1:shared_process": [],
+    "2C16DTGE2:shared_process": [],
+    "2C17V66MQ:shared_process": [],
+    "2C1EBZ8ER:shared_process": [],
+    "2C1KT4B72:shared_process": [],
+    "2C14V1NQU:shared_process": [],
+    "2C3FJRU53:shared_process": [],
+    "2C3TNANC8:shared_process": [],
+    "2C1JBSM61:shared_process": []
+  },
+  "config": {},
+  "info": {}
+}
